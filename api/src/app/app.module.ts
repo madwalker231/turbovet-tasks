@@ -8,6 +8,7 @@ import { Task } from './database/entities/task.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.modules';
 import { UserModule } from './users/users.module';
+import { TaskModule } from './task/task-module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './users/users.module';
     }),
     AuthModule,
     UserModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],
