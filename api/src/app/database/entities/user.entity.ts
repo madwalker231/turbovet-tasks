@@ -50,4 +50,9 @@ export class User {
       this.password = await bcrypt.hash(this.password, 10);
     }
   }
+
+  async validatePassword(attempt: string): Promise<boolean> {
+    if (!this.password) return false;
+    return bcrypt.compare(attempt, this.password);
+  }
 }
