@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { JwtAuthGuard } from './app/auth/guards/jwt-auth.guards';
+import { RolesGuard } from './app/auth/guards/roles.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,7 +16,10 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   const reflector = app.get(Reflector);
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
+  app.useGlobalGuards(
+    new JwtAuthGuard(reflector),
+    new RolesGuard(reflector),
+  );
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
