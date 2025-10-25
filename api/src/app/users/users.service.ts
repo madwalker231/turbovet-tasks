@@ -1,3 +1,6 @@
+import { BadRequestException } from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { RequestUser } from "../auth/type/request-user.type";
 import { Injectable, OnModuleInit, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../database/entities/user.entity";
@@ -7,8 +10,8 @@ import { Repository } from "typeorm";
 import { UserRole, TaskStatus } from "@turbovet-tasks/data-models";
 
 @Injectable()
-export class UserService implements OnModuleInit {
-  private readonly logger = new Logger (UserService.name)
+export class UsersService implements OnModuleInit {
+  private readonly logger = new Logger (UsersService.name)
 
   constructor(
     @InjectRepository(User)
@@ -57,6 +60,27 @@ export class UserService implements OnModuleInit {
       await this.taskRepository.save(task);
       this.logger.log(`Created test task: ${task.title}`);
     }
+  }
+
+  async create(createUserDto: CreateUserDto, adminUser: RequestUser) {
+    const existingUser = await this.usersRepository.findOne({
+      where: { email: createUserDto.email},
+    });
+
+    if  (existingUser) {
+      throw new BadRequestException('Email already in use.');
+    }
+
+    const newUser = this.usersRepository.create({
+      ...createUserDto,
+      // Forced organization-level scoping. New users is *always* in the admin's org.
+      organizationId: adminUser.organizationId,
+    });
+
+    await this.usersRepository.save(newUser);
+
+    const { password, ...result } = newUser;
+    return result;
   }
 
 

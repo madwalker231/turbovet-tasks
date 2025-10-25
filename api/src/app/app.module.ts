@@ -7,8 +7,8 @@ import { User } from './database/entities/user.entity';
 import { Task } from './database/entities/task.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.modules';
-import { UserModule } from './users/users.module';
-import { TaskModule } from './task/task-module';
+import { UsersModule } from './users/users.module';
+import { TasksModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -21,8 +21,8 @@ import { TaskModule } from './task/task-module';
       logging: true,
     }),
     AuthModule,
-    UserModule,
-    TaskModule,
+    UsersModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

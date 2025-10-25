@@ -9,4 +9,4 @@ import { Task } from '../database/entities/task.entity';
   controllers: [TasksController],
   providers: [TasksService],
 })
-export class TaskModule {}
+export class TasksModule {}
