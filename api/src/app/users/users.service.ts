@@ -2,8 +2,9 @@ import { Injectable, OnModuleInit, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../database/entities/user.entity";
 import { Organization } from "../database/entities/organization.entity";
+import { Task } from "../database/entities/task.entity";
 import { Repository } from "typeorm";
-import { UserRole } from "@turbovet-tasks/data-models";
+import { UserRole, TaskStatus } from "@turbovet-tasks/data-models";
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -14,6 +15,8 @@ export class UserService implements OnModuleInit {
     private usersRepository: Repository<User>,
     @InjectRepository(Organization)
     private orgRepository: Repository<Organization>,
+    @InjectRepository(Task)
+    private taskRepository: Repository<Task>,
   ) {}
 
   async onModuleInit() {
@@ -26,14 +29,33 @@ export class UserService implements OnModuleInit {
       await this.orgRepository.save(org);
       this.logger.log(`Created organization: ${org.name}`);
 
-      const user = this.usersRepository.create({
+      const admin = this.usersRepository.create({
         email: 'admin@test.com',
         password: 'password123',
         role: UserRole.ADMIN,
         organization: org,
       });
-      await this.usersRepository.save(user);
-      this.logger.log(`Created admin user: ${user.email}`);
+      await this.usersRepository.save(admin);
+      this.logger.log(`Created admin user: ${admin.email}`);
+
+      const viewer = this.usersRepository.create({
+        email: 'viewer@test.com',
+        password: 'password123',
+        role: UserRole.VIEWER,
+        organization: org,
+      });
+      await this.usersRepository.save(viewer);
+      this.logger.log(`Created viewer user: ${viewer.email}`);
+
+      const task = this.taskRepository.create({
+        title: 'My First Test Task',
+        description: 'This is a task to be deleted.',
+        status: TaskStatus.TODO,
+        organization: org,
+        createdBy: admin,
+      });
+      await this.taskRepository.save(task);
+      this.logger.log(`Created test task: ${task.title}`);
     }
   }
 
