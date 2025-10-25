@@ -31,14 +31,15 @@ You must run both the backend and frontend simultaneously in two separate termin
 Terminal 1: Run the Backend (API)
 The API runs on http://localhost:3000.
 
-npx nx serve api or nx serve api 
+API side start up command
+npx nx serve api
 
 The server will start, connect to the SQLite database (creating a db.sqlite file in the root), and run a seed script to create test users.
 
 Terminal 2: Run the Frontend (Client)
 The Angular app runs on http://localhost:4200.
 
-Start up API command
+Client side start up command
 npx nx serve client
 
 
@@ -128,11 +129,11 @@ Result: You are authenticated, the token is saved, and you are redirected to the
 Workflow 2: RBAC Test (Admin Creates User)
 This test proves an ADMIN can access the POST /api/users endpoint.
 
-# 1. Get Admin Token
+4.1.1 Get Admin Token
 $response = Invoke-WebRequest -Uri http://localhost:3000/api/auth/login -Method POST -Headers @{"Content-Type" = "application/json"} -Body '{"email": "admin@test.com", "password": "password123"}'
 $adminToken = ($response.Content | ConvertFrom-Json).access_token
 
-# 2. Run POST /api/users as Admin
+4.1.2 Run POST /api/users as Admin
 $newUserBody = '{"email": "new.member@test.com", "password": "password123", "role": "member"}'
 Invoke-WebRequest -Uri http://localhost:3000/api/users -Method POST -Headers @{"Authorization" = "Bearer $adminToken"; "Content-Type" = "application/json"} -Body $newUserBody
 Result: StatusCode: 201 Created
@@ -140,16 +141,16 @@ Result: StatusCode: 201 Created
 Workflow 3: RBAC Test (Viewer Blocked)
 This test proves a VIEWER is blocked from the same endpoint.
 
-# 1. Get Viewer Token
+4.2.1 Get Viewer Token
 $response = Invoke-WebRequest -Uri http://localhost:3000/api/auth/login -Method POST -Headers @{"Content-Type" = "application/json"} -Body '{"email": "viewer@test.com", "password": "password123"}'
 $viewerToken = ($response.Content | ConvertFrom-Json).access_token
 
-# 2. Run POST /api/users as Viewer
+4.2.2 Run POST /api/users as Viewer
 $newUserBody = '{"email": "another.member@test.com", "password": "password123", "role": "member"}'
 Invoke-WebRequest -Uri http://localhost:3000/api/users -Method POST -Headers @{"Authorization" = "Bearer $viewerToken"; "Content-Type" = "application/json"} -Body $newUserBody
 Result: StatusCode: 403 Forbidden
 
-5. ⏱️ Time Limit & Future Improvements 
+5.Time Limit & Future Improvements 
 
 The 8-hour time limit was reached. The core backend security and functionality are complete. The frontend has a working auth flow.
 
