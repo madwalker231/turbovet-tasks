@@ -15,6 +15,10 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
+  app.enableCors({
+    origin: 'http://localhost:4200',
+  });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const reflector = app.get(Reflector);

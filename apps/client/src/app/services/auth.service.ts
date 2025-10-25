@@ -21,7 +21,7 @@ export class AuthService {
   /**
    * Logs in the user, saves the token, and returns the response.
    */
-  login(credentials: { email: string; pass: string }): Observable<LoginResponse> {
+  login(credentials: { email: string; password: string }): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials)
       .pipe(

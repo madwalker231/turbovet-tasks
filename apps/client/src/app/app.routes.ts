@@ -1,5 +1,7 @@
 import { Route } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { authGuard } from './guards/auth.guards';
 
 export const appRoutes: Route[] = [
   {
@@ -7,8 +9,17 @@ export const appRoutes: Route[] = [
     component: LoginComponent,
   },
   {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [authGuard],
+  },
+  {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
-  }
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard',
+  },
 ];

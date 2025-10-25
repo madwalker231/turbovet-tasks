@@ -39,7 +39,7 @@ export class LoginComponent {
     this.errorMessage = null;
     const creds = {
       email: this.loginForm.value.email,
-      pass: this.loginForm.value.password, // Send 'pass' to match LocalStrategy
+      password: this.loginForm.value.password, // Send 'pass' to match LocalStrategy
     };
 
     this.authService.login(creds).subscribe({
